@@ -17,15 +17,46 @@ npm run dev
 
 `npm run build` gera a versão de produção em `dist/`.
 
-## Aviso importante
+## Persistência
 
-Esta versão **não tem segurança**. O login roda inteiro no navegador: qualquer
-pessoa pode se declarar logada pelo console, editar o próprio progresso e ler as
-respostas das provas no código. Não use como sistema de avaliação com valor real,
-e não cadastre uma senha que você use em outro lugar.
+Contas e progresso ficam no `localStorage` do navegador. Todo acesso a dados passa
+por `src/services/`, que expõe dois contratos:
 
-Toda a persistência passa por `src/services/index.js` — é o único arquivo a trocar
-para ligar um backend de verdade.
+- `auth` — cadastro, login, sessão e usuário atual
+- `progress` — carregar e salvar o progresso de um usuário
+
+Nenhuma página, componente ou regra de negócio importa a implementação
+diretamente: tudo consome `src/services/index.js`.
+
+## Trocando por um banco real
+
+As funções dos contratos já são assíncronas, então a interface já trata espera e
+erro. Para migrar, escreva os adaptadores novos respeitando os mesmos contratos e
+troque os dois imports em `src/services/index.js`:
+
+```js
+import * as supabaseAuth from "./supabaseAuth.js";
+import * as supabaseProgress from "./supabaseProgress.js";
+
+export const auth = supabaseAuth;
+export const progress = supabaseProgress;
+```
+
+Nada mais no projeto precisa mudar. Os contratos a respeitar, onde um `user` é
+sempre `{ id, nome, email }`:
+
+```
+signUp({ nome, email, senha })  → Promise<{ user } | { error }>
+signIn({ email, senha })        → Promise<{ user } | { error }>
+signOut()                       → Promise<void>
+getCurrentUser()                → Promise<user | null>
+
+loadProgress(userId)            → Promise<progress>
+saveProgress(userId, progress)  → Promise<void>
+```
+
+Chaves públicas podem ir para o repositório; chaves de serviço não. O `.gitignore`
+já bloqueia arquivos `.env`.
 
 ## Estado atual
 
