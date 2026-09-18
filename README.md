@@ -58,7 +58,3 @@ saveProgress(userId, progress)  → Promise<void>
 Chaves públicas podem ir para o repositório; chaves de serviço não. O `.gitignore`
 já bloqueia arquivos `.env`.
 
-## Estado atual
-
-Os 25 vídeos ainda não foram publicados: os campos `videoId` em
-`src/data/course.js` estão vazios.
