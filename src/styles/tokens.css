@@ -1,0 +1,9 @@
+:root {
+  --color-canvas: #e7eaed;
+  --color-ink: #101418;
+  --color-line: #cbd2d8;
+
+  --font-display: "Chivo", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+}
