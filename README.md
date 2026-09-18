@@ -28,33 +28,3 @@ por `src/services/`, que expõe dois contratos:
 Nenhuma página, componente ou regra de negócio importa a implementação
 diretamente: tudo consome `src/services/index.js`.
 
-## Trocando por um banco real
-
-As funções dos contratos já são assíncronas, então a interface já trata espera e
-erro. Para migrar, escreva os adaptadores novos respeitando os mesmos contratos e
-troque os dois imports em `src/services/index.js`:
-
-```js
-import * as supabaseAuth from "./supabaseAuth.js";
-import * as supabaseProgress from "./supabaseProgress.js";
-
-export const auth = supabaseAuth;
-export const progress = supabaseProgress;
-```
-
-Nada mais no projeto precisa mudar. Os contratos a respeitar, onde um `user` é
-sempre `{ id, nome, email }`:
-
-```
-signUp({ nome, email, senha })  → Promise<{ user } | { error }>
-signIn({ email, senha })        → Promise<{ user } | { error }>
-signOut()                       → Promise<void>
-getCurrentUser()                → Promise<user | null>
-
-loadProgress(userId)            → Promise<progress>
-saveProgress(userId, progress)  → Promise<void>
-```
-
-Chaves públicas podem ir para o repositório; chaves de serviço não. O `.gitignore`
-já bloqueia arquivos `.env`.
-

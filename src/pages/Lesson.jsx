@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import { findLesson } from "../data/course.js";
+import { videoDaAula } from "../data/videos.js";
 import { questionBanksByLesson } from "../data/questions/index.js";
 import { VideoPlayer } from "../components/VideoPlayer.jsx";
 import { Quiz } from "../components/Quiz.jsx";
@@ -46,6 +47,7 @@ export default function Lesson() {
   const theme = moduleTheme[moduleId];
   const lessonState = state.modules[moduleId].lessons[lessonId];
   const lessonNumber = courseModule.lessons.findIndex((item) => item.id === lessonId) + 1;
+  const videoId = videoDaAula(lessonId);
 
   const emRevisao = isLessonApproved(state, moduleId, lessonId);
   const mostrarExercicio = !quizResult && (emRevisao ? refazendoExercicio : lessonState.completed);
@@ -99,9 +101,9 @@ export default function Lesson() {
         </h1>
       </header>
 
-      {lesson.videoId ? (
+      {videoId ? (
         <VideoPlayer
-          youtubeId={lesson.videoId}
+          youtubeId={videoId}
           initialSeconds={lessonState.watchedSeconds}
           onProgress={handleProgress}
           onWatchedThreshold={handleWatchedThreshold}
@@ -139,7 +141,7 @@ export default function Lesson() {
           </div>
         )}
 
-        {!emRevisao && lesson.videoId && !lessonState.completed && (
+        {!emRevisao && videoId && !lessonState.completed && (
           <p className="border-l-4 border-line bg-surface px-5 py-4 text-sm text-muted">
             Assista o vídeo até o final para liberar o exercício desta aula.
           </p>
